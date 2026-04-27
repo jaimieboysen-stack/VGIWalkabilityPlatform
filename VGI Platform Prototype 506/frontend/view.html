@@ -1,0 +1,78 @@
+<html>
+<head>
+	<title> Urban Walkability </title>
+	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!-- Browser icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/static/mapApp/images/BikeMapsORG_Logo.ico">
+
+    <!-- Allow fullscreen webapps on iOS and Chrome Mobile -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- style sheets -->
+	<link rel="stylesheet" href="css/style.css">
+
+    <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Leaflet Draw-->
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-draw/dist/leaflet.draw.css">
+  <script src="https://unpkg.com/leaflet-draw/dist/leaflet.draw.js"></script>
+  <!-- Leaflet Geocoder -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <!-- Leaflet Locate -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.76.0/dist/L.Control.Locate.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.76.0/dist/L.Control.Locate.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+
+<!-- jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+ 
+</head>
+
+<body>
+	<div class="header">
+        Urban Street Walkability
+	</div>
+<div class="sidebar">
+  <ul>
+  <li><a href="index.html" class="button-link">Contribute Data</a></li> 
+  <li><a href="view.html" class="button-link">View Data</a></li>
+</ul>
+
+    <h3>About</h3>
+    <p>This platform was developed to collect small-scale data on street walkability using volunteered geographic information (VGI). 
+      Anyone can contribute by navigating to the contribution page and sharing their observations.
+    </p>
+
+    <h5>Terms of use</h5>
+    <p style="font-size: 12px;">This is a research prototype for street walkability data. 
+      Users are responsible for uploaded content and must have the rights to share it. 
+      Data is for research use only. 
+      Scraping or reuse is not allowed.
+    </p>
+
+    
+</div>
+
+	<div class="content">
+		<div id="map"></div>
+	</div>
+	<div class="footer">
+		Attribution: Contains information licensed under the Open Government Licence – City of Victoria.
+	</div>
+
+	  <!-- javascript -->
+  	<script src="js/viewingMap.js"></script>
+	
+  </body>
+</html>

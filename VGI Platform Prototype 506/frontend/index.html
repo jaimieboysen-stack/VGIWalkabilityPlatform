@@ -1,0 +1,456 @@
+<html>
+<head>
+	<title> Urban Walkability Contribute Page</title>
+	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!-- Browser icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="/static/mapApp/images/BikeMapsORG_Logo.ico">
+
+    <!-- Allow fullscreen webapps on iOS and Chrome Mobile -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- style sheets -->
+	<link rel="stylesheet" href="css/style.css">
+
+    <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+  <!-- Leaflet Geocoder -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+  <!-- Leaflet Locate -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.76.0/dist/L.Control.Locate.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.76.0/dist/L.Control.Locate.min.js"></script>
+
+   <!-- Turf API -->
+  <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <!-- jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="header">
+        Urban Street Walkability
+	</div>
+
+<div id="auditChoiceModal" class="modal">
+  <div class="modal-content">
+     <span class="close-btn" onclick="closeAuditChoice()">&times;</span>
+    <h3 id="selectedSegmentText">No segment selected</h3>
+    <p>Select Audit Type:</p>
+    <button type="button" onclick="openObjectiveAudit()">Objective Audit</button>
+    <button type="button" onclick="openSubjectiveAudit()">Subjective Audit</button>
+    <br><br>
+  </div>
+</div>
+
+<div id="objectiveSurveyModal" class="modal">
+  <div class="modal-content">
+     <span class="close-btn" onclick="closeObjectiveAudit()">&times;</span>
+    <form id="objectiveAuditForm">
+    <h3>MAPS Mini Survey</h3>
+    <h4>Contributor Context</h4>
+        <h5>Trip Purpose:</h5>
+            <select id="objTripPurpose">
+                <option value="" disabled selected>Select ...</option>
+                <option>Commute</option>
+                <option>School</option>
+                <option>Errand</option>
+                <option>Recreation</option>
+                <option>Walking to/from transit</option>
+                <option>Other</option>
+                <option>Prefer not to answer</option>
+            </select>
+        <h5>Local Familiarity:</h5>
+            <select id="objFamiliarity">
+                <option value="" disabled selected>Select ...</option>
+                <option>Very familiar (live/work nearby)</option>
+                <option>Somewhat familiar (occasional visitor)</option>
+                <option>Not familiar (first-time visitor)</option>
+                <option>Prefer not to answer</option>
+            </select>
+        <h5>Use Frequency:</h5>
+            <select id="objFrequency">
+                <option value="" disabled selected>Select ...</option>
+                <option>Daily</option>
+                <option>Several times a week</option>
+                <option>Once a week</option>
+                <option>Few times a month</option>
+                <option>Rarely</option>
+                <option>Never</option>
+                <option>Prefer not to answer</option>
+            </select>
+        <h5>Group Composition:</h5>
+            <select id="objGroupComp">
+                <option value="" disabled selected>Select ...</option>
+                <option>Alone</option>
+                <option>With children</option>
+                <option>With a dog</option>
+                <option>With a group</option>
+                <option>Prefer not to answer</option>
+            </select>
+            <br>
+        <h5>Accessibility Needs:</h5>
+            <select id="objAccessibility">
+                <option value="" disabled selected>Select ...</option>
+                <option>No accessibility needs</option>
+                <option>Using wheelchair / mobility scooter</option>
+                <option>Using cane / walker / crutches</option>
+                <option>Stroller</option>
+                <option>Visual impairment</option>
+                <option>Other accessibility need</option>
+                <option>Prefer not to answer</option>
+            </select>
+        <h5>Gender Identity:</h5>
+            <select id="objGender">
+                <option value="" disabled selected>Select ...</option>
+                <option>Female</option>
+                <option>Male</option>
+                <option>Non-binary</option>
+                <option>Preferred Identity not listed</option>
+                <option>Prefer not to answer</option>
+            </select>
+        <h5>Age:</h5>
+            <select id="objAge">
+                <option value="" disabled selected>Select ...</option>
+                <option>0-17</option>
+                <option>18+</option>
+                <option>65+</option>
+                <option>Prefer not to answer</option>
+            </select>
+        <hr>
+    <h4>Street Segment</h4>
+    <h5>1. What is the dominant land use type of this segment?</h5>
+        <details>
+            <summary>see more</summary>
+            <p> Decide whether the segment  predominantly consists of residential housing or commercial buildings. If your are unsure as the segment is evenly split, choose ‘commercial’.</p>
+        </details>
+            <select id="type">
+                <option value="" disabled selected>Select ...</option>
+                <option value="0">Residential</option>
+                <option value="1">Commercial</option>
+            </select>
+        <h5>2. Number of public parks within the segment </h5>
+         <details>
+            <summary>see more</summary>
+                <p> A public park should only be counted if they can be accessed along the route walked. Do not count parks beyond the route even if they can be seen from the route </p>
+         </details>
+            <select id="parks">
+                <option value="" disabled selected>Select ...</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2+</option>
+            </select>
+        <h5>3. Number of public transit stops within the segment </h5>
+        <details>
+            <summary>see more</summary>
+                <p> Transit stops located across the street from each other may be counted as ‘1’ stop, as long as they service the same transit line. If the stops are far enough away that a transit user could not quickly run across the street to catch a bus, count ‘2’. </p>
+         </details>
+            <select id="transit">
+                <option value="" disabled selected>Select ...</option>
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2+</option>
+            </select>
+        <h5>4. Are seating areas or benches present?</h5>
+        <details>
+            <summary>see more</summary>
+                <p> Tables or benches outside of restaurants/cafés (see picture) do not count as a places to sit. These must be public seating areas. Transit or bus stop benches are also excluded. </p>
+                 <img src="images/benches.png" alt="Street bench example" style="width:60%; border-radius:4px; margin-top:6px;">
+         </details>
+            <label><input type="radio" name="benches" value="0"> No</label>
+            <label><input type="radio" name="benches" value="1"> Yes</label>
+        <h5>5. Level of street lighting </h5>
+         <details>
+            <summary>see more</summary>
+                <p> None </p>
+                 <img src="images/noStreetLights.png" alt="No Street Lights" style="width:60%; border-radius:4px; margin-top:6px;">
+                 <p> Some (e.g. overhead street lights on utility poles with wide spacing) </p>
+                 <img src="images/someStreetLights.png" alt="Some Street Lights" style="width:60%; border-radius:4px; margin-top:6px;">
+                 <p> Ample (e.g regularly spaced pedestrian lamp posts)</p>
+                 <img src="images/ampleStreetLight.png" alt="Ample Street Lights" style="width:60%; border-radius:4px; margin-top:6px;">
+         </details>
+            <select id="lights">
+                <option value="" disabled selected>Select ...</option>
+                <option value="0">None</option>
+                <option value="1">Some</option>
+                <option value="2">Ample</option>
+            </select>
+        <h5>6. Are buildings well maintained?</h5>
+        <details>
+            <summary>see more</summary>
+                <p> Buildings do not need to be brand new to get a 100% rating. They just need to be well kept and maintained</p>
+                <p>0-99% of buildings well maintained (one or more building like this)</p>
+                 <img src="images/unmaintained.png" alt="Unmaintained" style="width:60%; border-radius:4px; margin-top:6px;">
+                 <p> 100% of buildings well maintained</p>
+                 <img src="images/maintained.png" alt="Maintained" style="width:60%; border-radius:4px; margin-top:6px;">
+        </details>
+            <label><input type="radio" name="buildings" value="0"> 0–99%</label>
+            <label><input type="radio" name="buildings" value="1"> 100%</label>
+        <h5>7. Is there visible graffiti (non-mural)?</h5>
+        <details>
+            <summary>see more</summary>
+                 <img src="images/graffiti.png" alt="Graffiti" style="width:60%; border-radius:4px; margin-top:6px;">
+         </details>
+            <label><input type="radio" name="graffiti" value="1"> No</label>
+            <label><input type="radio" name="graffiti" value="0"> Yes</label>
+        <h5>8. Type of cycling infrastructure present</h5>
+        <details>
+            <summary>see more</summary>
+                <p>Painted bike lane</p>
+                <img src="images/paintedBikeLane.png" alt="Painted bike lane" style="width:60%; border-radius:4px; margin-top:6px;">
+                <p>Seperated bike lane</p>
+                <img src="images/seperatedBikeLane.png" alt="Seperated bike lane" style="width:60%; border-radius:4px; margin-top:6px;">
+        </details>
+            <select id="bike">
+                <option value="" disabled selected>Select ...</option>
+                <option value="0">None</option>
+                <option value="1">Painted line</option>
+                <option value="2">Physical barrier</option>
+            </select>
+        <h5>9. Is there a sidewalk present?</h5>
+        <details>
+            <summary>see more</summary>
+                <p> A sidewalk need not be nicely paved walking path. As long as it is paved, asphalt or concrete; it will count as a sidewalk.  Count any sidewalk along a segment, whether short or long.  </p>
+         </details>
+            <label><input type="radio" name="sidewalk" value="0"> No</label>
+            <label><input type="radio" name="sidewalk" value="1"> Yes</label>
+        <h5>10. Are there poorly maintained sidewalk sections that are major tripping hazards?</h5>
+        <details>
+            <summary>see more</summary>
+                <p>Major Trip Hazard: An increased likelihood of tripping due to a raising or lowing in the walkway. A hazard could be due to plants, tree roots, or general erosion. A major trip hazard would require pedestrians to look down to avoid tripping. </p>
+                 <img src="images/trippingHazards.png" alt="Sidewalk tripping hazards" style="width:60%; border-radius:4px; margin-top:6px;">
+        </details>
+            <label><input type="radio" name="hazards" value="1"> No</label>
+            <label><input type="radio" name="hazards" value="0"> Yes (or no sidewalk present)</label>
+        <h5>11. Is there a buffer between sidewalk and road?</h5>
+        <details>
+            <summary>see more</summary>
+                <p>Buffer: Separates vehicular and pedestrian zones parallel to the edge of paved roads. They often occupy space between traffic lanes and walking paths that is not intended for either vehicle traffic or walkers. Any buffer on a segment, no matter how long, will be counted.  </p>
+                <p>Buffer</p>
+                <img src="images/buffer.png" alt="Buffer" style="width:60%; border-radius:4px; margin-top:6px;">
+                <img src="images/typesOfBuffers.png" alt="Buffer Examples" style="width:60%; border-radius:4px; margin-top:6px;">
+                <p>No Buffer</p>
+                <img src="images/noBuffer.png" alt="No buffer" style="width:60%; border-radius:4px; margin-top:6px;">
+        </details>
+            <label><input type="radio" name="buffer" value="0"> No (or no sidewalk present)</label>
+            <label><input type="radio" name="buffer" value="1"> Yes</label>
+        <h5>12. Estimated tree canopy / shade coverage</h5>
+        <details>
+            <summary>see more</summary>
+                <p>"Coverage" is the percent of the length of walkway covered by trees, awnings, or other structures providing shade. It need not cover the entire width of the sidewalk. Depending on the time of the year, trees may lose their leaves, so make sure to visualize the trees with their full foliage, in the middle of the day. </p>
+                <p>0-25% coverage</p>
+                <img src="images/minimalOverhead.png" alt="Minimal overhead coverage" style="width:60%; border-radius:4px; margin-top:6px;">
+                <p>26-75% coverage</p>
+                <img src="images/someOverhead.png" alt="Some overhead coverage" style="width:60%; border-radius:4px; margin-top:6px;">
+                <p>76-100% coverage</p>
+                <img src="images/fullOverhead.png" alt="Ample overhead coverage" style="width:60%; border-radius:4px; margin-top:6px;">
+        </details>
+            <select id="shade">
+                <option value="" disabled selected>Select ...</option>
+                <option value="0">0–25%</option>
+                <option value="1">26–75%</option>
+                <option value="2">76–100%</option>
+            </select>
+        <br><br>
+    <button type="button" onclick="submitObjectiveAudit()">Submit</button>
+    <p style="font-size: 0.75rem; color: #999; text-align: center; line-height: 1.5;">
+        Sallis, J., Frank, L., Saelens, B., Cain, K., Conway, T., Chapman, J., Geremia, C., & King, A. (2014). 
+        <em>Microscale Audit of Pedestrian Streetscapes (MAPS) Mini Version: Training Manual & Picture Guide.</em> 
+        San Diego State University / Urban Design 4 Health / Children's Hospital Seattle / Stanford University Medical Center.
+    </p>
+    </form>
+  </div>
+</div>
+
+<div id="subjectiveSurveyModal" class="modal hidden">
+  <div class="modal-content">
+   <span class="close-btn" onclick="closeSubjectiveAudit()">&times;</span>
+    <form id="subjectiveAuditForm"> 
+        <h4>Contributor Context:</h4>
+        <h5>Trip Purpose:</h5>
+            <select id="subTripPurpose">
+                <option value="" disabled selected>Select ...</option>
+                <option>Commute</option>
+                <option>School</option>
+                <option>Errand</option>
+                <option>Recreation</option>
+                <option>Walking to/from transit</option>
+                <option>Other</option>
+                <option>Prefer not to answer</option>
+            </select>
+
+        <h5>Local Familiarity:</h5>
+            <select id="subFamiliarity">
+                <option value="" disabled selected>Select ...</option>
+                <option>Very familiar (live/work nearby)</option>
+                <option>Somewhat familiar (occasional visitor)</option>
+                <option>Not familiar (first-time visitor)</option>
+                <option>Prefer not to answer</option>
+            </select>
+        <h5>Use Frequency:</h5>
+            <select id="subFrequency">
+                <option value="" disabled selected>Select ...</option>
+                <option>Daily</option>
+                <option>Several times a week</option>
+                <option>Once a week</option>
+                <option>Few times a month</option>
+                <option>Rarely</option>
+                <option>Never</option>
+                <option>Prefer not to answer</option>
+            </select>
+        <h5>Group Composition:</h5>
+            <select id="subGroupComp">
+                <option value="" disabled selected>Select ...</option>
+                <option>Alone</option>
+                <option>With children</option>
+                <option>With a dog</option>
+                <option>With a group</option>
+                <option>Prefer not to answer</option>
+            </select>
+            <br>
+        <h5>Accessibility Needs:</h5>
+            <select id="subAccessibility">
+                <option value="" disabled selected>Select ...</option>
+                <option>No accessibility needs</option>
+                <option>Using wheelchair / mobility scooter</option>
+                <option>Using cane / walker / crutches</option>
+                <option>Stroller</option>
+                <option>Visual impairment</option>
+                <option>Other accessibility need</option>
+                <option>Prefer not to answer</option>
+            </select>
+        <h5>Gender Identity:</h5>
+            <select id="subGender">
+                <option value="" disabled selected>Select ...</option>
+                <option>Female</option>
+                <option>Male</option>
+                <option>Non-binary</option>
+                <option>Identity not listed</option>
+                <option>Prefer not to answer</option>
+            </select>
+        <h5>Age:</h5>
+            <select id="subAge">
+                <option value="" disabled selected>Select ...</option>
+                <option>0-17</option>
+                <option>18+</option>
+                <option>65+</option>
+                <option>Prefer not to answer</option>
+            </select>
+        <hr>
+    <h4>Subjective Observations</h4>
+        <p>Rank the following statements on a scale from 1 (Strongly disagree) to 5 (Strongly agree):</p>
+    <h5>I feel safe from traffic while walking on this street.</h5>
+        <select id="traffic_safety">
+            <option value="" disabled selected>Select ...</option>
+            <option value="1">Strongly disagree</option>
+            <option value="2">Disagree</option>
+            <option value="3">Neutral</option>
+            <option value="4">Agree</option>
+            <option value="5">Strongly agree</option>
+        </select>
+    <h5>I feel personally safe while walking here.</h5>
+        <select id="personal_safety">
+            <option value="" disabled selected>Select ...</option>
+            <option value="1">Strongly disagree</option>
+            <option value="2">Disagree</option>
+            <option value="3">Neutral</option>
+            <option value="4">Agree</option>
+            <option value="5">Strongly agree</option>
+        </select>
+    <h5>There are adequate amenities for comfort (e.g., seating, shade).</h5>
+        <select id="comfort_amenities">
+            <option value="" disabled selected>Select ...</option>
+            <option value="1">Strongly disagree</option>
+            <option value="2">Disagree</option>
+            <option value="3">Neutral</option>
+            <option value="4">Agree</option>
+            <option value="5">Strongly agree</option>
+        </select>
+    <h5>I enjoy walking on this street.</h5>
+        <select id="enjoyment">
+            <option value="" disabled selected>Select ...</option>
+            <option value="1">Strongly disagree</option>
+            <option value="2">Disagree</option>
+            <option value="3">Neutral</option>
+            <option value="4">Agree</option>
+            <option value="5">Strongly agree</option>
+        </select>
+    <h5>This street is visually appealing.</h5>
+        <select id="aesthetic">
+            <option value="" disabled selected>Select ...</option>
+            <option value="1">Strongly disagree</option>
+            <option value="2">Disagree</option>
+            <option value="3">Neutral</option>
+            <option value="4">Agree</option>
+            <option value="5">Strongly agree</option>
+        </select>
+    <h5>Sidewalks and crossings are well-designed and convenient.</h5>
+        <select id="ease_design">
+            <option value="" disabled selected>Select ...</option>
+            <option value="1">Strongly disagree</option>
+            <option value="2">Disagree</option>
+            <option value="3">Neutral</option>
+            <option value="4">Agree</option>
+            <option value="5">Strongly agree</option>
+        </select>
+    <br><br>
+    <button type="button" onclick="submitSubjectiveAudit()">Submit</button>
+    </form>
+  </div>
+</div>
+
+
+<div class="sidebar">
+  <div id="sidebarMain">
+    <ul>
+      <li><a href="index.html">Contribute Data</a></li>
+      <li><a href="view.html">View Data</a></li>
+    </ul>
+  </div>
+  
+  <h4>How to contribute?</h4>
+  <p>You must be physically present on the street segment in order to begin a survey.</p>
+         <ol>
+             <li>Find a street segment you want to survey on the map</li>
+             <li>Tap it to select it</li>
+             <li>Choose between an objective or subjective audit</li>
+             <li>Fill in the survey and submit your response</li>
+        </ol>
+
+    <h4>What is a street segment?</h4>
+<p>A street segment is the section of road between two intersections.</p>
+<img src="images/streetSeg.jpeg" alt="Example of a street segment" style="width:100%; border-radius:8px;">
+
+<h5>Terms of use</h5>
+    <p style="font-size: 12px;">This is a research prototype for street walkability data. 
+      Users are responsible for uploaded content and must have the rights to share it. 
+      Data is for research use only. 
+      Scraping or reuse is not allowed.
+    </p>
+
+</div>
+
+<div class="content">
+	<div id="map"></div>
+</div>
+
+<div class="footer">
+  Attribution: Contains information licensed under the Open Government Licence – City of Victoria. 
+  Survey adapted from MAPS Mini (Sallis, Frank, Saelens et al., 2014).
+</div>
+	  <!-- javascript -->
+  	<script src="js/map.js"></script>
+    <script src="js/survey.js"></script>
+  </body>
+</html>
+
