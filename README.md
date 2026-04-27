@@ -8,6 +8,8 @@ For testing the site:
   2. node server.js
   3. http://localhost:8080
 
+Note: Images used in the this project are not included in this repository, as they are not original works.
+
 References and Sources:
 1. GeeksforGeeks. Fetch API in JavaScript. https://www.geeksforgeeks.org/javascript/javascript-fetch-method/
 2. W3Schools. JavaScript Fetch API. https://www.w3schools.com/js/js_api_fetch.asp
