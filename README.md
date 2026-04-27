@@ -4,9 +4,9 @@ A prototype platform for micro-level street audit VGI collection.
 This is still in development, and the viewing page lacks full funcitonality. The frontend mapping interface is developed using Leaflet with OpenStreetMap tiles. The backend is implemented using Node.js with an Express server. All sources and refence used for the code listed below.
 
 For testing the site:
-  npm install express
-  node server.js
-  http://localhost:8080
+  1. npm install express
+  2. node server.js
+  3. http://localhost:8080
 
 References and Sources:
 1. GeeksforGeeks. Fetch API in JavaScript. https://www.geeksforgeeks.org/javascript/javascript-fetch-method/
